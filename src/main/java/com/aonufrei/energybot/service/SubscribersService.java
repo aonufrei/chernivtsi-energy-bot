@@ -5,9 +5,9 @@ import com.aonufrei.energybot.model.Subscriber;
 import com.aonufrei.energybot.repository.SubscriberRepository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SubscribersService {
@@ -29,12 +29,12 @@ public class SubscribersService {
 		repository.save(new Subscriber(chatId));
 	}
 
-	@Transactional
 	public void unsubscribeChat(String chatId) {
 		repository.deleteByChatId(chatId);
 	}
 
 	public void save(Subscriber subscribe) {
+		subscribe.setId(UUID.randomUUID().toString());
 		subscribe.setCreationDate(LocalDateTime.now());
 		repository.save(subscribe);
 	}
