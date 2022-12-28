@@ -38,9 +38,11 @@ public class MailingService {
 			attachment.setMedia(inputStream, "Schedule");
 			SendPhoto message = createNotification(chatId, "Current schedule", attachment);
 			pollingBot.executeAsync(message);
-			Subscriber subscriber = subscribersService.getSubscriptionByChatId(chatId);
-			subscriber.setLastImageReceivedHash(currentImageHash);
-			subscribersService.save(subscriber);
+			if (subscribersService.isChatSubscribed(chatId)) {
+				Subscriber subscriber = subscribersService.getSubscriptionByChatId(chatId);
+				subscriber.setLastImageReceivedHash(currentImageHash);
+				subscribersService.save(subscriber);
+			}
 		} catch (IOException e) {
 			log.info("Error when sending image to subscribers");
 		}
