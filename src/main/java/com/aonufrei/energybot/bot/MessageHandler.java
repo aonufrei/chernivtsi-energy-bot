@@ -7,7 +7,9 @@ import com.aonufrei.energybot.service.SubscribersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -58,8 +60,22 @@ public class MessageHandler {
 			if (commandRegistry.containsKey(command)) {
 				commandRegistry.get(command).process(pollingBot, update);
 			} else {
+				sendUnknownCommandMessage(update);
 				log.info("Unknown command was triggered");
 			}
+		}
+	}
+
+	private void sendUnknownCommandMessage(Update update) {
+		String chatId = update.getMessage().getChatId().toString();
+		SendMessage sendMessage = SendMessage.builder()
+				.chatId(chatId)
+				.text("Unknown command was provided")
+				.build();
+		try {
+			pollingBot.execute(sendMessage);
+		} catch (TelegramApiException e) {
+			log.error("Cannot send message to the user", e);
 		}
 	}
 
