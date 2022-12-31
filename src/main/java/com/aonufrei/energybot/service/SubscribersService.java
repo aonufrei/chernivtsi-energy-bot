@@ -33,15 +33,22 @@ public class SubscribersService {
 		repository.deleteByChatId(chatId);
 	}
 
-	public void save(Subscriber subscribe) {
-		subscribe.setId(UUID.randomUUID().toString());
-		subscribe.setCreationDate(LocalDateTime.now());
-		repository.save(subscribe);
+	public void save(Subscriber s) {
+		if (s.getId() == null) {
+			s.setId(UUID.randomUUID().toString());
+		}
+		s.setCreationDate(LocalDateTime.now());
+		repository.save(s);
 	}
 
 	public void saveAll(List<Subscriber> subscribers) {
 		LocalDateTime now = LocalDateTime.now();
-		subscribers.forEach(s -> s.setCreationDate(now));
+		subscribers.forEach(s -> {
+			if (s.getId() == null) {
+				s.setId(UUID.randomUUID().toString());
+			}
+			s.setCreationDate(now);
+		});
 		repository.saveAll(subscribers);
 	}
 
