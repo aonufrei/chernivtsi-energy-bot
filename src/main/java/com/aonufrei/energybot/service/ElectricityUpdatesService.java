@@ -97,7 +97,8 @@ public class ElectricityUpdatesService {
 	public byte[] takeScheduleScreenshot() throws FetchException {
 		System.setProperty("webdriver.chrome.driver", CHROMEDRIVER_LOCATION);
 		ChromeOptions chromeOptions = new ChromeOptions();
-		chromeOptions.addArguments("--headless", "--window-size=1920,1080");
+		chromeOptions.addArguments("--headless", "--window-size=1920,1080", "--disable-gpu",
+				"--no-sandbox", "--disable-setuid-sandbox");
 		WebDriver driver = new ChromeDriver(chromeOptions);
 		driver.get(SHUTDOWNS_URL);
 		BufferedImage screenshotOfTable = getScreenshotOfTable(driver);
