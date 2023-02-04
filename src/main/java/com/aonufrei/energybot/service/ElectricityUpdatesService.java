@@ -13,6 +13,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -95,7 +96,10 @@ public class ElectricityUpdatesService {
 
 	public byte[] takeScheduleScreenshot() throws FetchException {
 		System.setProperty("webdriver.chrome.driver", CHROMEDRIVER_LOCATION);
-		WebDriver driver = new ChromeDriver();
+		ChromeOptions chromeOptions = new ChromeOptions();
+		chromeOptions.addArguments("--headless");
+		chromeOptions.addArguments("--no-sandbox");
+		WebDriver driver = new ChromeDriver(chromeOptions);
 		driver.get(SHUTDOWNS_URL);
 		BufferedImage screenshotOfTable = getScreenshotOfTable(driver);
 		driver.quit();
