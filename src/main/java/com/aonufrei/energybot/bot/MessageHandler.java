@@ -1,6 +1,7 @@
 package com.aonufrei.energybot.bot;
 
 import com.aonufrei.energybot.bot.commands.*;
+import com.aonufrei.energybot.service.ElectricityUpdatesService;
 import com.aonufrei.energybot.service.ImageProcessingService;
 import com.aonufrei.energybot.service.MailingService;
 import com.aonufrei.energybot.service.SubscribersService;
@@ -27,11 +28,14 @@ public class MessageHandler {
 	private final ImageProcessingService imageProcessingService;
 	private final MailingService mailingService;
 
-	public MessageHandler(SubscribersService subscribersService, PollingBot pollingBot, ImageProcessingService imageProcessingService, MailingService mailingService) {
+	private final ElectricityUpdatesService updatesService;
+
+	public MessageHandler(SubscribersService subscribersService, PollingBot pollingBot, ImageProcessingService imageProcessingService, MailingService mailingService, ElectricityUpdatesService updatesService) {
 		this.subscribersService = subscribersService;
 		this.pollingBot = pollingBot;
 		this.imageProcessingService = imageProcessingService;
 		this.mailingService = mailingService;
+		this.updatesService = updatesService;
 	}
 
 	@PostConstruct
@@ -39,7 +43,7 @@ public class MessageHandler {
 		pollingBot.setMessageHandler(this);
 		HelpCommand helpCommand = new HelpCommand();
 		StartCommand startCommand = new StartCommand(subscribersService);
-		CurrentScheduleCommand currentScheduleCommand = new CurrentScheduleCommand(imageProcessingService, mailingService);
+		CurrentScheduleCommand currentScheduleCommand = new CurrentScheduleCommand(imageProcessingService, mailingService, updatesService);
 		UnsubscribeCommand unsubscribeCommand = new UnsubscribeCommand(subscribersService);
 
 		List<AbstractCommand> availableCommands = new LinkedList<>();

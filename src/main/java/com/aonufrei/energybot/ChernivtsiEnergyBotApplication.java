@@ -30,4 +30,5 @@ public class ChernivtsiEnergyBotApplication implements CommandLineRunner {
 		telegramBotsApi.registerBot(pollingBot);
 		log.info("Bot is up");
 	}
+
 }

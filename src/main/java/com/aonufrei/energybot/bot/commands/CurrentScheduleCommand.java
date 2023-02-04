@@ -2,6 +2,8 @@ package com.aonufrei.energybot.bot.commands;
 
 import com.aonufrei.energybot.bot.PollingBot;
 import com.aonufrei.energybot.dto.CommandInfo;
+import com.aonufrei.energybot.dto.ScheduleProcessingResponse;
+import com.aonufrei.energybot.service.ElectricityUpdatesService;
 import com.aonufrei.energybot.service.ImageProcessingService;
 import com.aonufrei.energybot.service.MailingService;
 import org.slf4j.Logger;
@@ -15,10 +17,12 @@ public class CurrentScheduleCommand extends AbstractCommand {
 	private final Logger log = LoggerFactory.getLogger(MailingService.class);
 	private final ImageProcessingService imageProcessingService;
 	private final MailingService mailingService;
+	private final ElectricityUpdatesService updatesService;
 
-	public CurrentScheduleCommand(ImageProcessingService imageProcessingService, MailingService mailingService) {
+	public CurrentScheduleCommand(ImageProcessingService imageProcessingService, MailingService mailingService, ElectricityUpdatesService updatesService) {
 		this.imageProcessingService = imageProcessingService;
 		this.mailingService = mailingService;
+		this.updatesService = updatesService;
 	}
 
 	@Override
@@ -29,6 +33,16 @@ public class CurrentScheduleCommand extends AbstractCommand {
 	@Override
 	public void process(PollingBot pollingBot, Update update) {
 		String chatId = update.getMessage().getChatId().toString();
+		String adminChatId = mailingService.ADMIN_CHAT_ID;
+		if (adminChatId.equals(chatId)) {
+			ScheduleProcessingResponse processingResponse = updatesService.processChanges();
+			if (processingResponse == null) {
+				mailingService.sendAdminMessage("Failed to get current schedule");
+				return;
+			}
+			mailingService.sendCurrentSchedule(adminChatId, processingResponse.getHash(), processingResponse.getImage());
+			return;
+		}
 //		byte[] imageBytes = imageProcessingService.getImageBytes();
 //		mailingService.sendCurrentSchedule(chatId, imageBytes);
 		SendMessage message = SendMessage.builder()

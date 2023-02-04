@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Service
 public class ImageProcessingService {
@@ -37,6 +40,22 @@ public class ImageProcessingService {
 			log.error("Error occurred when processing image");
 			return null;
 		}
+	}
+
+	public BufferedImage mergeImagesVertically(List<BufferedImage> images) {
+		int height = images.stream().mapToInt(BufferedImage::getHeight).sum();
+		int width = images.get(0).getWidth();
+		BufferedImage finalImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+		Graphics g = finalImage.getGraphics();
+		int y = 0;
+		for (BufferedImage image : images) {
+			g.drawImage(image, 0, y, null);
+			y += image.getHeight();
+		}
+		g.dispose();
+
+		return finalImage;
 	}
 
 	public String hashImageData(byte[] data) {

@@ -18,10 +18,10 @@ public class JobExecutor {
 		this.electricityUpdatesService = electricityUpdatesService;
 	}
 
-//	@Scheduled(cron = "0 0/15 * * * *")
+	@Scheduled(cron = "0 0/15 * * * *")
 	public void fetchImageFromWebsite() {
 		log.info("Started changes detection job");
-		electricityUpdatesService.detectChanges();
+		electricityUpdatesService.processChangesAndSendNotifications();
 		log.info("Finished changes detecting job");
 	}
 
