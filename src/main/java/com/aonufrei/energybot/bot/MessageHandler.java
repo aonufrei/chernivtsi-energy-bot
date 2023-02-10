@@ -25,15 +25,13 @@ public class MessageHandler {
 
 	private final PollingBot pollingBot;
 	private final SubscribersService subscribersService;
-	private final ImageProcessingService imageProcessingService;
 	private final MailingService mailingService;
 
 	private final ElectricityUpdatesService updatesService;
 
-	public MessageHandler(SubscribersService subscribersService, PollingBot pollingBot, ImageProcessingService imageProcessingService, MailingService mailingService, ElectricityUpdatesService updatesService) {
+	public MessageHandler(SubscribersService subscribersService, PollingBot pollingBot, MailingService mailingService, ElectricityUpdatesService updatesService) {
 		this.subscribersService = subscribersService;
 		this.pollingBot = pollingBot;
-		this.imageProcessingService = imageProcessingService;
 		this.mailingService = mailingService;
 		this.updatesService = updatesService;
 	}
@@ -43,7 +41,7 @@ public class MessageHandler {
 		pollingBot.setMessageHandler(this);
 		HelpCommand helpCommand = new HelpCommand();
 		StartCommand startCommand = new StartCommand(subscribersService);
-		CurrentScheduleCommand currentScheduleCommand = new CurrentScheduleCommand(imageProcessingService, mailingService, updatesService);
+		CurrentScheduleCommand currentScheduleCommand = new CurrentScheduleCommand(mailingService, updatesService);
 		UnsubscribeCommand unsubscribeCommand = new UnsubscribeCommand(subscribersService);
 
 		List<AbstractCommand> availableCommands = new LinkedList<>();

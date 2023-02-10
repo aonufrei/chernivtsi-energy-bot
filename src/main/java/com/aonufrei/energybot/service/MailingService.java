@@ -87,9 +87,7 @@ public class MailingService {
 	}
 
 	public void notifySubscribers(InputFile updatedImage, String currentHash) {
-		List<Subscriber> subscriberToNotify = subscribersService.getSubscribersThatDidntReceive(currentHash).stream()
-				.filter(s -> ADMIN_CHAT_ID.equals(s.getChatId()))
-				.collect(Collectors.toList());
+		List<Subscriber> subscriberToNotify = subscribersService.getSubscribersThatDidntReceive(currentHash);
 		log.info(String.format("Sending updates to [%d] subscribers", subscriberToNotify.size()));
 		subscriberToNotify.stream()
 				.map(s -> createNotification(s.getChatId(), "Schedule was updated", updatedImage))
